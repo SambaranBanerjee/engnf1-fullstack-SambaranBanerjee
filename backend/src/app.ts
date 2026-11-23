@@ -1,7 +1,10 @@
 import cors from "cors";
-import express, { type NextFunction, type Request, type Response } from "express";
+import express from "express";
 import helmet from "helmet";
 import { env } from "./config/env.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { notFound } from "./middleware/notFound.js";
+import { authRouter } from "./modules/auth/auth.routes.js";
 
 export function createApp() {
   const app = express();
@@ -16,8 +19,7 @@ export function createApp() {
   );
   app.use(express.json({ limit: "1mb" }));
 
-  // Lightweight health check for Render and smoke tests
-  app.get("/health", (_req: Request, res: Response) => {
+  app.get("/health", (_req, res) => {
     res.status(200).json({
       status: "ok",
       service: "triagesync-backend",
@@ -25,26 +27,10 @@ export function createApp() {
     });
   });
 
-  // 404 handler matching standard error contract
-  app.use((_req: Request, res: Response) => {
-    res.status(404).json({
-      error: {
-        code: "NOT_FOUND",
-        message: "Requested route not found",
-      },
-    });
-  });
+  app.use("/api/auth", authRouter);
 
-  // Centralized error fallback (never leaks stack traces or secrets)
-  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error("Unhandled application error:", err instanceof Error ? err.message : "Unknown error");
-    res.status(500).json({
-      error: {
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An unexpected error occurred",
-      },
-    });
-  });
+  app.use(notFound);
+  app.use(errorHandler);
 
   return app;
 }
