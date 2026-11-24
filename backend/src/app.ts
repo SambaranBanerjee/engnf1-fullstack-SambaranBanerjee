@@ -4,7 +4,10 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFound } from "./middleware/notFound.js";
+import { adminAnalyticsRouter } from "./modules/analytics/analytics.routes.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { bookingsRouter } from "./modules/bookings/bookings.routes.js";
+import { resourcesRouter } from "./modules/resources/resources.routes.js";
 import { statsRouter } from "./modules/tickets/stats.routes.js";
 import { ticketsRouter } from "./modules/tickets/tickets.routes.js";
 
@@ -32,6 +35,9 @@ export function createApp() {
   app.use("/api/auth", authRouter);
   app.use("/api/tickets", ticketsRouter);
   app.use("/api/stats", statsRouter);
+  app.use("/api/resources", resourcesRouter);
+  app.use("/api/bookings", bookingsRouter);
+  app.use("/api/admin", adminAnalyticsRouter);
 
   app.use(notFound);
   app.use(errorHandler);
