@@ -5,6 +5,8 @@ import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFound } from "./middleware/notFound.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { statsRouter } from "./modules/tickets/stats.routes.js";
+import { ticketsRouter } from "./modules/tickets/tickets.routes.js";
 
 export function createApp() {
   const app = express();
@@ -28,6 +30,8 @@ export function createApp() {
   });
 
   app.use("/api/auth", authRouter);
+  app.use("/api/tickets", ticketsRouter);
+  app.use("/api/stats", statsRouter);
 
   app.use(notFound);
   app.use(errorHandler);
