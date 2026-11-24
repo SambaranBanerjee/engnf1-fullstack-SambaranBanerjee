@@ -6,8 +6,8 @@ import * as schema from "./schema/index.js";
 const { Pool } = pg;
 
 export const pool = new Pool({
-  connectionString: env.DATABASE_URL,
-  max: 10,
+  connectionString: process.env.DATABASE_URL || env.DATABASE_URL,
+  max: 15,
 });
 
 export const db = drizzle(pool, { schema });
