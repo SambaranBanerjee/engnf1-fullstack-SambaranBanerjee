@@ -36,22 +36,22 @@ export const tickets = pgTable(
   "tickets",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    externalId: varchar("external_id", { length: 120 }).notNull().unique(),
-    subject: varchar("subject", { length: 150 }).notNull(),
+    externalId: text("external_id").notNull().unique(),
+    subject: text("subject").notNull(),
     body: text("body").notNull(),
     autoCategory: ticketCategoryEnum("auto_category").notNull(),
     category: ticketCategoryEnum("category").notNull(),
-    isHumanOverride: boolean("is_human_override").default(false).notNull(),
-    priority: ticketPriorityEnum("priority").default("MEDIUM").notNull(),
-    status: ticketStatusEnum("status").default("OPEN").notNull(),
+    isHumanOverride: boolean("is_human_override").notNull().default(false),
+    priority: ticketPriorityEnum("priority").notNull().default("MEDIUM"),
+    status: ticketStatusEnum("status").notNull().default("OPEN"),
     assigneeId: uuid("assignee_id").references(() => users.id, {
       onDelete: "set null",
     }),
-    isReviewed: boolean("is_reviewed").default(false).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+    isReviewed: boolean("is_reviewed").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
   },
